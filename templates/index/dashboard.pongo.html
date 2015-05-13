@@ -1,0 +1,62 @@
+{% extends "../layout.pongo.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+
+{% block stylesheets %}
+<style type="text/css">
+    body {
+        padding-top: 90px;
+    }
+</style>
+{% endblock %}
+
+{% block javascripts %}
+<script type="text/javascript">
+    $(document).ready(function(){
+        $('#send').on('click', function (evt){
+            var $form = $('#form'),
+                    data = $form.serialize();
+            $.get($form.attr('action'), data, function (resp){
+                console.log(resp);
+            });
+
+            return false;
+        });
+
+        window.socket = new WebSocket('ws://127.0.0.1:8080/echo');
+        socket.onopen = function () {
+            console.log('socket connected');
+        };
+        socket.onmessage = function (message) {
+            console.log(message.data);
+        };
+    });
+</script>
+{% endblock %}
+
+{% block content %}
+<nav class="navbar navbar-inverse navbar-fixed-top">
+    <div class="container">
+        <div class="navbar-header">
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="#">Pigeon</a>
+        </div>
+    </div>
+</nav>
+
+<div class="container">
+
+  {% for contact in agenda.users %}
+  <p>
+      {{contact.email}}
+  </p>
+  {% endfor %}
+
+</div><!-- /.container -->
+{% endblock %}
